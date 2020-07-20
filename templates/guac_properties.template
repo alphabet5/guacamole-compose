@@ -1,0 +1,6 @@
+radius-hostname: ${radius_hostname}
+radius-auth-port: 1812
+radius-shared-secret: ${radius_secret}
+radius-auth-protocol: pap
+radius-retries: 2
+radius-timeout: 1

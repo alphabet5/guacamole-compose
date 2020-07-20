@@ -1,0 +1,62 @@
+version: '2.0'
+
+networks:
+  guac-network:
+    driver: bridge
+
+services:
+  guacd:
+    container_name: guacd
+    image: guacamole/guacd
+    networks:
+      - guac-network
+    restart: always
+  mysql:
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DB: guacamole_db
+      MYSQL_USER: guacamole_user
+      MYSQL_PASSWORD: password
+    image: mysql/mysql-server
+    networks:
+      - guac-network
+    restart: always
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d:ro
+      - ./mysql:/var/lib/mysql:rw
+  guacamole:
+    container_name: guacamole
+    depends_on:
+      - guacd
+      - mysql
+    environment:
+      GUACD_HOSTNAME: guacd
+      MYSQL_HOSTNAME: mysql
+      MYSQL_DATABASE: guacamole_db
+      MYSQL_USER: guacamole_user
+      MYSQL_PASSWORD: password
+      GUACAMOLE_HOME: /guacamole_home
+      MYSQL_ROOT_PASSWORD: postgres
+      POSTGRES_PASSWORD: ChooseYourOwnPasswordHere1234
+      POSTGRES_USER: guacamole_user
+    image: guacamole/guacamole
+    networks:
+      - guac-network
+    restart: always
+    volumes:
+      - ./shared:/shared:rw
+      - ./guacamole_home:/guacamole_home:ro
+  nginx:
+   container_name: nginx
+   restart: always
+   image: nginx
+   volumes:
+     - ./nginx/conf:/etc/nginx:ro
+     - ./nginx/certs:/certs:ro
+     - ./nginx/auth:/auth:ro
+   ports:
+     - 80:80
+     - 443:443
+   networks:
+     - guac-network

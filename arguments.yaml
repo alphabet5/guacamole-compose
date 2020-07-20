@@ -1,0 +1,13 @@
+---
+clean:
+  help: Clean the directories automatically created during deployment.
+  default: False
+  action: 'store_true'
+deploy:
+  help: Generate configurations and deploy guacamole using docker-compose.
+  default: False
+  action: 'store_true'
+configs_only:
+  help: Generate configurations only. Do not deploy guacamole.
+  default: False
+  action: 'store_true'

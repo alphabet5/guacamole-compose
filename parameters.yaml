@@ -1,0 +1,8 @@
+hostname: localhost
+domain: domain.com
+guacadmin_password: password
+mysql_password: password
+radius_secret: sharedsecret
+radius_host: localhost
+domain_user: guac_user
+domain_password: password
