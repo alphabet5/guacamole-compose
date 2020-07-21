@@ -5,6 +5,26 @@ from string import Template
 import os
 
 
+def get_group_members(ldap_server,user,password,domain,group):
+    from ldap3 import Server, Connection, ALL, NTLM, ALL_ATTRIBUTES
+    import json
+    d1, d2 = domain.split('.')
+    server = Server(ldap_server,
+                    get_info=ALL)
+    conn = Connection(server=server,
+                      user=d1 + '\\' + user,
+                      password=password,
+                      auto_bind=True,
+                      authentication=NTLM)
+    conn.bind()
+    conn.search('dc=domain,dc=com',
+                '(memberOf:1.2.840.113556.1.4.1941:=CN=' + str(group) + ',CN=Users,DC=' + d1 + ',DC=' + d2 + ')',
+                attributes=ALL_ATTRIBUTES)
+    results = json.loads(conn.response_to_json())
+    conn.unbind()
+    return results
+
+
 def parse_arguments(arguments_yaml_file='arguments.yaml'):
     import argparse
     from pydoc import locate
@@ -21,16 +41,17 @@ def parse_arguments(arguments_yaml_file='arguments.yaml'):
 if __name__ == '__main__':
     args = vars(parse_arguments('arguments.yaml'))
     params = yaml.load(open('./parameters.yaml', 'r'), Loader=yaml.FullLoader)
+    client = docker.from_env()
 
     if args['clean']:
         print("Clearing generated directories...")
-        client = docker.from_env()
         client.containers.prune()
         client.volumes.prune()
         client.images.prune()
         shutil.rmtree('./shared')
         shutil.rmtree('./mysql')
-        shutil.rmtree('./nginx')
+        if not args['skip_nginx']:
+            shutil.rmtree('./nginx')
         shutil.rmtree('./init')
         shutil.rmtree('./mysql')
 
@@ -45,7 +66,13 @@ if __name__ == '__main__':
                      './nginx/auth']:
             if not os.path.exists(folder):
                 os.makedirs(folder)
+        # Update init.sql in the templates container from the latest guacamole/guacamole container.
+        container = client.containers.create('guacamole/guacamole')
+        archive = container.get_archive('/opt/guacamole/bin/initdb.sh')
 
+        client.wait(container_id)
+
+        client.remove_container(container_id)
         nginx_conf_template = Template(open('./templates/nginx_conf.template', 'r').read())
         with open('./nginx/conf/nginx.conf', 'w') as f:
             f.write(nginx_conf_template.substitute(**params))
@@ -60,7 +87,7 @@ if __name__ == '__main__':
         print("Deploying...")
 
     if args['create_users']:
-        pass
+        get_group_members()
 
     if args['create_connections']:
         pass

@@ -23,7 +23,7 @@ services:
       - guac-network
     restart: always
     volumes:
-      - ./init:/docker-entrypoint-initdb.d:ro
+      - ./templates/init.sql:/init.sql:ro
       - ./mysql:/var/lib/mysql:rw
   guacamole:
     container_name: guacamole
@@ -47,6 +47,7 @@ services:
     volumes:
       - ./shared:/shared:rw
       - ./guacamole_home:/guacamole_home:ro
+    command: "--init-file /init.sql"
   nginx:
    container_name: nginx
    restart: always

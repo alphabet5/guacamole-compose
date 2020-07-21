@@ -11,3 +11,7 @@ configs_only:
   help: Generate configurations only. Do not deploy guacamole.
   default: False
   action: 'store_true'
+skip_nginx:
+  help: Skip generating the nginx.conf file - this must be manually created and located at ./nginx/conf/nginx.conf.
+  default: False
+  action: 'store_true'
