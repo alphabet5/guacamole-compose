@@ -1,0 +1,6 @@
+radius-hostname: ${radius_server}
+radius-auth-port: 1812
+radius-shared-secret: ${radius_secret}
+radius-auth-protocol: mschapv2
+radius-retries: 2
+radius-timeout: 1

@@ -18,12 +18,16 @@ services:
       MYSQL_DB: guacamole_db
       MYSQL_USER: guacamole_user
       MYSQL_PASSWORD: password
+      MYSQL_ROOT_HOST: '%'
     image: mysql/mysql-server
+    ports:
+      - 3306:3306
+      - 33060:33060
     networks:
       - guac-network
     restart: always
     volumes:
-      - ./init:/docker-entrypoint-initdb.d:ro
+      - ./mysql_init:/docker-entrypoint-initdb.d:ro
       - ./mysql:/var/lib/mysql:rw
   guacamole:
     container_name: guacamole
@@ -37,9 +41,6 @@ services:
       MYSQL_USER: guacamole_user
       MYSQL_PASSWORD: password
       GUACAMOLE_HOME: /guacamole_home
-      MYSQL_ROOT_PASSWORD: postgres
-      POSTGRES_PASSWORD: ChooseYourOwnPasswordHere1234
-      POSTGRES_USER: guacamole_user
     image: guacamole/guacamole
     networks:
       - guac-network
@@ -49,6 +50,8 @@ services:
       - ./guacamole_home:/guacamole_home:ro
   nginx:
    container_name: nginx
+   depends_on:
+     - guacamole
    restart: always
    image: nginx
    volumes:
@@ -60,8 +63,3 @@ services:
      - 443:443
    networks:
      - guac-network
-   # run nginx
-   #command: /bin/bash -c "nginx -g 'daemon off;'"
-# nginx-debug-mode
-#   command: /bin/bash -c "nginx-debug -g 'daemon off;'"
-####################################################################################
