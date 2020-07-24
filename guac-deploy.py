@@ -13,7 +13,7 @@ def create_user(username, password, mysql_user, mysql_password):
     from datetime import datetime
     import hashlib
     import uuid
-    engine = sqlalchemy.create_engine('mysql+mysqldb://' +
+    engine = sqlalchemy.create_engine('mysql+pymysql://' +
                                       mysql_user + ':' +
                                       mysql_password + '@127.0.0.1:3306/guacamole_db')
     conn = engine.connect()
