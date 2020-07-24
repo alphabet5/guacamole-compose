@@ -37,6 +37,7 @@ auto_connections:
       security: 'tls'
       username: '${GUAC_USERNAME}'
       password: '${GUAC_PASSWORD}'
+      domain: 'domain.com'
 manual_connections:
   - connection:
       connection_name: 'TEST-CONNECTION.domain.com - 172.16.159.220'
