@@ -110,10 +110,10 @@ def random_string(stringLength=10):
     return ''.join(random.choice(letters) for i in range(stringLength))
 
 
-def get_group_members(ldap_server, ldap_user, ldap_password, domain, ldap_group, type='User', **kwargs):
+def get_group_members(ldap_server, ldap_user, ldap_password, ldap_domain, ldap_group, type='User', **kwargs):
     from ldap3 import Server, Connection, ALL, NTLM, ALL_ATTRIBUTES
     import json
-    d1, d2 = domain.split('.')
+    d1, d2 = ldap_domain.split('.')
     server = Server(ldap_server,
                     get_info=ALL)
     conn = Connection(server=server,

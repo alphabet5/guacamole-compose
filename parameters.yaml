@@ -8,6 +8,7 @@ radius_server: 172.16.159.220
 ldap_server: 172.16.159.220
 ldap_user: guac_user
 ldap_password: password
+ldap_domain: domain.com
 ldap_group: guacamole
 auto_connection_creation: true
 auto_connection_dns: false
