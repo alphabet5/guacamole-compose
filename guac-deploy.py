@@ -13,7 +13,7 @@ def create_user(username, password, mysql_user, mysql_password):
     from datetime import datetime
     import hashlib
     import uuid
-    engine = sqlalchemy.create_engine('mysql+mysqldb://' +
+    engine = sqlalchemy.create_engine('mysql+pymysql://' +
                                       mysql_user + ':' +
                                       mysql_password + '@127.0.0.1:3306/guacamole_db')
     conn = engine.connect()
@@ -122,8 +122,9 @@ def get_group_members(ldap_server, ldap_user, ldap_password, domain, ldap_group,
                       auto_bind=True,
                       authentication=NTLM)
     conn.bind()
-    conn.search('dc=domain,dc=com',
-                '(&(objectCategory=' + type + ')(memberOf:1.2.840.113556.1.4.1941:=CN=' +
+    conn.search('dc=' + d1 + ',dc=' + d2 + '',
+                '(&(objectCategory=' + type +
+                ')(memberOf:1.2.840.113556.1.4.1941:=CN=' +
                 str(ldap_group) + ',CN=Users,DC=' + d1 + ',DC=' + d2 + '))',
                 attributes=ALL_ATTRIBUTES)
     results = json.loads(conn.response_to_json())

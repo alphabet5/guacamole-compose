@@ -14,9 +14,30 @@ This set of scripts and templates automates the deployment process for guacamole
 - Configures connections from the paramter file.
 
 
-## Usage
+## Requirements
 
-python3 ./guac-deploy.py --deploy --create_users --create_connections
+- docker
+- docker-compose
+- python3.8
+
+Python Packages
+- mysqlclient
+- sqlalchemy
+- docker
+- docker-compose
+- ldap3
+- pymsql
+
+
+## Usage
+```bash
+git clone https://github.com/alphabet5/guacamole-compose.git
+cd guacamole-compose
+```
+
+```bash
+python3.8 ./guac-deploy.py --deploy --create_users --create_connections
+```
 ```bash
 usage: guac-deploy.py [-h] [--clean] [--deploy] [--configs] [--skip_nginx] [--create_users] [--create_connections]
 
@@ -29,3 +50,5 @@ optional arguments:
   --create_users        Create users within MySQL.
   --create_connections  Create connections within MySQL.
 ```
+
+
