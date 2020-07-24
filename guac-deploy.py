@@ -257,7 +257,7 @@ if __name__ == '__main__':
                     password=params['guacadmin_password'],
                     mysql_user=params['mysql_user'],
                     mysql_password=params['mysql_password'])
-        users = get_group_members(**params, type='User')
+        users = get_group_members(**params['ldap_servers']['users'], type='User')
         for user in users['entries']:
             create_user(username=user['attributes']['sAMAccountName'],
                         password=''.join(random.choice(string.ascii_lowercase) for i in range(25)),
@@ -279,7 +279,7 @@ if __name__ == '__main__':
             i += 1
         if i > 0:
             time.sleep(10)
-        computers = get_group_members(**params, type='Computer')
+        computers = get_group_members(**params['ldap_servers']['connections'], type='Computer')
         for computer in computers['entries']:
             if params['auto_connection_dns']:
                 hostname = computer['attributes']['dNSHostName']
