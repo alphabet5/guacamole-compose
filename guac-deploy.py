@@ -300,6 +300,6 @@ if __name__ == '__main__':
                                   mysql_password=params['mysql_password'],
                                   connection=connection)
 
-    if args['create_connections'] or args['create_users']:
+    if args['create_connections'] or args['create_users'] or args['update_permissions']:
         update_user_permissions(mysql_user=params['mysql_user'],
                                 mysql_password=params['mysql_password'])

@@ -23,3 +23,7 @@ create_connections:
   help: Create connections within MySQL.
   default: False
   action: 'store_true'
+update_permissions:
+  help: Update user permissions to allow all users read access to all connections.
+  default: False
+  action: 'store_true'
