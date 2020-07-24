@@ -305,16 +305,17 @@ if __name__ == '__main__':
                                          'security': 'tls',
                                          'username': '${GUAC_USERNAME}',
                                          'password': '${GUAC_PASSWORD}',
-                                         'domain': 'domain.com'
+                                         'domain': params['domain']
                                          }
                           }
             create_connection(mysql_user=params['mysql_user'],
                               mysql_password=params['mysql_password'],
                               connection=connection)
-        for connection in params['manual_connections']:
-            create_connection(mysql_user=params['mysql_user'],
-                              mysql_password=params['mysql_password'],
-                              connection=connection)
+        if 'manual_connections' in params.keys():
+            for connection in params['manual_connections']:
+                create_connection(mysql_user=params['mysql_user'],
+                                  mysql_password=params['mysql_password'],
+                                  connection=connection)
 
     if args['create_connections'] or args['create_users']:
         update_user_permissions(mysql_user=params['mysql_user'],
