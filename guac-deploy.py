@@ -283,31 +283,14 @@ if __name__ == '__main__':
         for computer in computers['entries']:
             if params['auto_connection_dns']:
                 hostname = computer['attributes']['dNSHostName']
-                connection_name = hostname
             else:
                 import dns.resolver
-
                 dns.resolver.default_resolver = dns.resolver.Resolver(configure=False)
                 dns.resolver.default_resolver.nameservers = [params['auto_connection_dns_resolver']]
                 hostname = dns.resolver.query(computer['attributes']['dNSHostName'], 'a').response.answer[0][0].address
-            connection = {'connection': {'connection_name': hostname,
-                                         'protocol': 'rdp'},
-                          'parameters': {'hostname': '172.16.159.220',
-                                         'console-audio': 'true',
-                                         'create-drive-path': 'true',
-                                         'drive-name': 'shared',
-                                         'drive-path': '/shared',
-                                         'enable-drive': 'true',
-                                         'enable-printing': 'true',
-                                         'ignore-cert': 'true',
-                                         'port': '3389',
-                                         'printer-name': 'RemotePrinter',
-                                         'security': 'tls',
-                                         'username': '${GUAC_USERNAME}',
-                                         'password': '${GUAC_PASSWORD}',
-                                         'domain': params['domain']
-                                         }
-                          }
+            connection = params['auto_connections']
+            connection['connection']['connection_name'] = computer['attributes']['dNSHostName']
+            connection['parameters']['hostname'] = hostname
             create_connection(mysql_user=params['mysql_user'],
                               mysql_password=params['mysql_password'],
                               connection=connection)

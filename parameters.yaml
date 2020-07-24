@@ -6,34 +6,37 @@ mysql_password: password
 radius_secret: sharedsecret
 radius_server: 172.16.159.220
 ldap_servers:
-  - users:
-      ldap_server: 172.16.159.220
-      ldap_user: guac_user
-      ldap_password: password
-      ldap_domain: domain.com
-      ldap_group: guacamole
-  - connections:
-      ldap_server: 172.16.159.220
-      ldap_user: guac_user
-      ldap_password: password
-      ldap_domain: domain.com
-      ldap_group: guacamole
+  users:
+    ldap_server: 172.16.159.220
+    ldap_user: guac_user
+    ldap_password: password
+    ldap_domain: domain.com
+    ldap_group: guacamole
+  connections:
+    ldap_server: 172.16.159.220
+    ldap_user: guac_user
+    ldap_password: password
+    ldap_domain: domain.com
+    ldap_group: guacamole
 auto_connection_creation: true
 auto_connection_dns: false
 auto_connection_dns_resolver: 172.16.159.220
 auto_connections:
-  console-audio: 'true'
-  create-drive-path: 'true'
-  drive-name: 'shared'
-  drive-path: '/shared'
-  enable-drive: 'true'
-  enable-printing: 'true'
-  ignore-cert: 'true'
-  port: '3389'
-  printer-name: 'RemotePrinter'
-  security: 'tls'
-  username: '${GUAC_USERNAME}'
-  password: '${GUAC_PASSWORD}'
+  - connection:
+      protocol: 'rdp'
+  - parameters:
+      console-audio: 'true'
+      create-drive-path: 'true'
+      drive-name: 'shared'
+      drive-path: '/shared'
+      enable-drive: 'true'
+      enable-printing: 'true'
+      ignore-cert: 'true'
+      port: '3389'
+      printer-name: 'RemotePrinter'
+      security: 'tls'
+      username: '${GUAC_USERNAME}'
+      password: '${GUAC_PASSWORD}'
 manual_connections:
   - connection:
       connection_name: 'TEST-CONNECTION.domain.com - 172.16.159.220'
