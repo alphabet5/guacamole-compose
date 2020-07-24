@@ -184,7 +184,7 @@ if __name__ == '__main__':
                        './init']:
             if os.path.exists(folder):
                 shutil.rmtree(folder)
-        if not args['skip_nginx']:
+        if args['nginx']:
             if os.path.exists('./nginx/conf'):
                 shutil.rmtree('./nginx/conf')
 
@@ -201,7 +201,7 @@ if __name__ == '__main__':
                        './nginx/auth']:
             if not os.path.exists(folder):
                 os.makedirs(folder)
-        if not args['skip_nginx']:
+        if args['nginx']:
             nginx_conf_template = string.Template(open('./templates/nginx_conf.template', 'r').read())
             with open('./nginx/conf/nginx.conf', 'w') as f:
                 f.write(nginx_conf_template.substitute(**params))
@@ -318,18 +318,3 @@ if __name__ == '__main__':
     if args['create_connections'] or args['create_users']:
         update_user_permissions(mysql_user=params['mysql_user'],
                                 mysql_password=params['mysql_password'])
-        # computer_dict
-        # for computer in computers['entries']:
-        #     if not params['auto_connection_dns']:
-        #         ip_address = computer['']
-        #         computer_dict
-        # command = 'docker exec -i mysql mysql -uroot -ppassword  <<< $\''
-        # command += 'INSERT INTO guacamole_db.guacamole_connection (connection_name, protocol, failover_only) VALUES (' + escape_str(
-        #     conn_name) + ', ' + escape_str('rdp') + ', 0);'
-        # command += 'SET @connection_id = (SELECT connection_id FROM guacamole_db.guacamole_connection WHERE connection_name=' + escape_str(
-        #     conn_name) + ');'
-        # for parameter, value in parameters.items():
-        #     command += 'INSERT INTO guacamole_db.guacamole_connection_parameter (connection_id, parameter_name, parameter_value) VALUES (@connection_id, ' + escape_str(
-        #         parameter) + ', ' + escape_str(value) + ') ON DUPLICATE KEY UPDATE parameter_value = ' + escape_str(
-        #         value) + ';'
-        # run_command(command + '\'')
