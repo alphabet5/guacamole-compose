@@ -25,6 +25,8 @@ Python Packages
 - sqlalchemy
 - docker
 - docker-compose
+- ldap3
+- pymsql
 
 
 ## Usage

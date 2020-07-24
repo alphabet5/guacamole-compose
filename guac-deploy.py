@@ -122,8 +122,9 @@ def get_group_members(ldap_server, ldap_user, ldap_password, domain, ldap_group,
                       auto_bind=True,
                       authentication=NTLM)
     conn.bind()
-    conn.search('dc=domain,dc=com',
-                '(&(objectCategory=' + type + ')(memberOf:1.2.840.113556.1.4.1941:=CN=' +
+    conn.search('dc=' + d1 + ',dc=' + d2 + '',
+                '(&(objectCategory=' + type +
+                ')(memberOf:1.2.840.113556.1.4.1941:=CN=' +
                 str(ldap_group) + ',CN=Users,DC=' + d1 + ',DC=' + d2 + '))',
                 attributes=ALL_ATTRIBUTES)
     results = json.loads(conn.response_to_json())
