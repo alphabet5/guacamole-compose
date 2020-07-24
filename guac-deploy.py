@@ -37,7 +37,7 @@ def create_user(username, password, mysql_user, mysql_password):
 
 def update_user_permissions(mysql_user, mysql_password):
     import sqlalchemy
-    engine = sqlalchemy.create_engine('mysql+mysqldb://' +
+    engine = sqlalchemy.create_engine('mysql+pymysql://' +
                                       mysql_user + ':' +
                                       mysql_password + '@127.0.0.1:3306/guacamole_db')
     conn = engine.connect()
@@ -87,7 +87,7 @@ def update_user_permissions(mysql_user, mysql_password):
 
 def create_connection(mysql_user, mysql_password, connection):
     import sqlalchemy
-    engine = sqlalchemy.create_engine('mysql+mysqldb://' +
+    engine = sqlalchemy.create_engine('mysql+pymysql://' +
                                       mysql_user + ':' +
                                       mysql_password + '@127.0.0.1:3306/guacamole_db')
     conn = engine.connect()
