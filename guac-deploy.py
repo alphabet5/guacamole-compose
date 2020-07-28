@@ -264,10 +264,6 @@ if __name__ == '__main__':
                         password=''.join(random.choice(string.ascii_lowercase) for i in range(25)),
                         mysql_user=params['mysql_user'],
                         mysql_password=params['mysql_password'])
-            create_user(username=user['attributes']['userPrincipalName'],
-                        password=''.join(random.choice(string.ascii_lowercase) for i in range(25)),
-                        mysql_user=params['mysql_user'],
-                        mysql_password=params['mysql_password'])
 
     if args['create_connections']:
         import time
