@@ -26,6 +26,7 @@ Python Packages
 - docker-compose
 - ldap3
 - pymsql
+- dnspython (v2.0.0)
 
 
 ## Usage
