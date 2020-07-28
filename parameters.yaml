@@ -18,26 +18,25 @@ ldap_servers:
     ldap_password: password
     ldap_domain: domain.com
     ldap_group: guacamole
-auto_connection_creation: true
 auto_connection_dns: false
 auto_connection_dns_resolver: 172.16.159.220
 auto_connections:
-  - connection:
-      protocol: 'rdp'
-  - parameters:
-      console-audio: 'true'
-      create-drive-path: 'true'
-      drive-name: 'shared'
-      drive-path: '/shared'
-      enable-drive: 'true'
-      enable-printing: 'true'
-      ignore-cert: 'true'
-      port: '3389'
-      printer-name: 'RemotePrinter'
-      security: 'tls'
-      username: '${GUAC_USERNAME}'
-      password: '${GUAC_PASSWORD}'
-      domain: 'domain.com'
+  connection:
+    protocol: 'rdp'
+  parameters:
+    console-audio: 'true'
+    create-drive-path: 'true'
+    drive-name: 'shared'
+    drive-path: '/shared'
+    enable-drive: 'true'
+    enable-printing: 'true'
+    ignore-cert: 'true'
+    port: '3389'
+    printer-name: 'RemotePrinter'
+    security: 'nla'
+    username: '${GUAC_USERNAME}'
+    password: '${GUAC_PASSWORD}'
+    domain: 'domain.com'
 manual_connections:
   - connection:
       connection_name: 'TEST-CONNECTION.domain.com - 172.16.159.220'
@@ -54,7 +53,7 @@ manual_connections:
       ignore-cert: 'true'
       port: '3389'
       printer-name: 'RemotePrinter'
-      security: 'tls'
+      security: 'nla'
       username: '${GUAC_USERNAME}'
       password: '${GUAC_PASSWORD}'
       domain: 'domain.com'

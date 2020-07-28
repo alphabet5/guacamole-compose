@@ -120,6 +120,7 @@ def get_group_members(ldap_server, ldap_user, ldap_password, ldap_domain, ldap_g
                       user=d1 + '\\' + ldap_user,
                       password=ldap_password,
                       auto_bind=True,
+                      auto_referrals=False,
                       authentication=NTLM)
     conn.bind()
     conn.search('dc=' + d1 + ',dc=' + d2 + '',
@@ -263,10 +264,6 @@ if __name__ == '__main__':
                         password=''.join(random.choice(string.ascii_lowercase) for i in range(25)),
                         mysql_user=params['mysql_user'],
                         mysql_password=params['mysql_password'])
-            create_user(username=user['attributes']['userPrincipalName'],
-                        password=''.join(random.choice(string.ascii_lowercase) for i in range(25)),
-                        mysql_user=params['mysql_user'],
-                        mysql_password=params['mysql_password'])
 
     if args['create_connections']:
         import time
@@ -300,6 +297,6 @@ if __name__ == '__main__':
                                   mysql_password=params['mysql_password'],
                                   connection=connection)
 
-    if args['create_connections'] or args['create_users']:
+    if args['create_connections'] or args['create_users'] or args['update_permissions']:
         update_user_permissions(mysql_user=params['mysql_user'],
                                 mysql_password=params['mysql_password'])
