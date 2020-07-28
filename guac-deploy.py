@@ -284,7 +284,7 @@ if __name__ == '__main__':
                 import dns.resolver
                 dns.resolver.default_resolver = dns.resolver.Resolver(configure=False)
                 dns.resolver.default_resolver.nameservers = [params['auto_connection_dns_resolver']]
-                hostname = dns.resolver.query(computer['attributes']['dNSHostName'], 'a').response.answer[0][0].address
+                hostname = dns.resolver.resolve(computer['attributes']['dNSHostName'], 'a').response.answer[0][0].address
             connection = params['auto_connections']
             connection['connection']['connection_name'] = computer['attributes']['dNSHostName']
             connection['parameters']['hostname'] = hostname
