@@ -57,4 +57,3 @@ manual_connections:
       username: '${GUAC_USERNAME}'
       password: '${GUAC_PASSWORD}'
       domain: 'domain.com'
-auto_users: true
