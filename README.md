@@ -21,7 +21,6 @@ This set of scripts and templates automates the deployment process for guacamole
 - python3.8
 
 Python Packages
-- mysqlclient
 - sqlalchemy
 - docker
 - docker-compose

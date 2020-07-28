@@ -120,6 +120,7 @@ def get_group_members(ldap_server, ldap_user, ldap_password, ldap_domain, ldap_g
                       user=d1 + '\\' + ldap_user,
                       password=ldap_password,
                       auto_bind=True,
+                      auto_referrals=False,
                       authentication=NTLM)
     conn.bind()
     conn.search('dc=' + d1 + ',dc=' + d2 + '',
