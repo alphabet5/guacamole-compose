@@ -19,6 +19,7 @@ This set of scripts and templates automates the deployment process for guacamole
 - docker
 - docker-compose
 - python3.8
+- git
 
 Python Packages
 - sqlalchemy
