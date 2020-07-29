@@ -1,0 +1,8 @@
+###### Requirements without Version Specifiers ######
+ldap3
+pymysql
+docker
+sqlalchemy
+
+###### Requirements with Version Specifiers ######
+dnspython >= 2.0.0

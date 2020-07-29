@@ -24,7 +24,6 @@ This set of scripts and templates automates the deployment process for guacamole
 Python Packages
 - sqlalchemy
 - docker
-- docker-compose
 - ldap3
 - pymsql
 - dnspython (v2.0.0)
