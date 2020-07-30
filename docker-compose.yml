@@ -11,6 +11,8 @@ services:
     networks:
       - guac-network
     restart: always
+    volumes:
+      - ./shared:/shared:rw
   mysql:
     container_name: mysql
     environment:
@@ -46,7 +48,6 @@ services:
       - guac-network
     restart: always
     volumes:
-      - ./shared:/shared:rw
       - ./guacamole_home:/guacamole_home:ro
   nginx:
    container_name: nginx

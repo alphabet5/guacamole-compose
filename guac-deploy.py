@@ -280,13 +280,15 @@ if __name__ == '__main__':
         for computer in computers['entries']:
             if params['auto_connection_dns']:
                 hostname = computer['attributes']['dNSHostName']
+                conn_name = hostname
             else:
                 import dns.resolver
                 dns.resolver.default_resolver = dns.resolver.Resolver(configure=False)
                 dns.resolver.default_resolver.nameservers = [params['auto_connection_dns_resolver']]
                 hostname = dns.resolver.resolve(computer['attributes']['dNSHostName'], 'a').response.answer[0][0].address
+                conn_name = computer['attributes']['dNSHostName'] + " - " + hostname
             connection = params['auto_connections']
-            connection['connection']['connection_name'] = computer['attributes']['dNSHostName']
+            connection['connection']['connection_name'] = conn_name
             connection['parameters']['hostname'] = hostname
             create_connection(mysql_user=params['mysql_user'],
                               mysql_password=params['mysql_password'],

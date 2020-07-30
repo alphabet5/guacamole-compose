@@ -59,6 +59,6 @@ optional arguments:
 ```bash
 crontab -e
 
-0 0 * * * root find /root/guacamole-compose/shared/* -mtime +6 -type f -delete
-*/5 * * * * root cd /root/guacamole-compose && python3.8 ./guac-deploy.py --create_users
+0 0 * * * find /root/guacamole-compose/shared/* -mtime +6 -type f -delete
+*/5 * * * * cd /root/guacamole-compose && python3.8 ./guac-deploy.py --create_users
 ```

@@ -13,7 +13,7 @@ sleep 1
 
 mysql -uroot -ppassword --force -e "FLUSH PRIVILEGES;" || true
 mysql -uroot -ppassword --force -e "CREATE DATABASE guacamole_db;" || true
-mysql -uroot -ppassword --force -e "CREATE USER 'guacamole_user'@'%' IDENTIFIED BY 'password';" || true
+mysql -uroot -ppassword --force -e "CREATE USER 'guacamole_user'@'%' IDENTIFIED WITH mysql_native_password BY 'password';" || true
 mysql -uroot -ppassword --force -e "GRANT SELECT,INSERT,UPDATE,DELETE ON guacamole_db.* TO 'guacamole_user'@'%';" || true
 mysql -uroot -ppassword --force -e "FLUSH PRIVILEGES;" || true
 
