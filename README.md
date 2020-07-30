@@ -39,16 +39,27 @@ cd guacamole-compose
 python3.8 ./guac-deploy.py --deploy --create_users --create_connections
 ```
 ```bash
-usage: guac-deploy.py [-h] [--clean] [--deploy] [--configs] [--skip_nginx] [--create_users] [--create_connections]
+usage: guac-deploy.py [-h] [--clean] [--deploy] [--configs] [--nginx] [--create_users] [--create_connections]
+                      [--update_permissions]
 
 optional arguments:
   -h, --help            show this help message and exit
   --clean               Clean the directories automatically created during deployment.
   --deploy              Generate configurations and deploy guacamole using docker-compose.
   --configs             Generate configurations only. Do not deploy guacamole.
-  --skip_nginx          Skip generating the nginx.conf file - this must be manually created and located at ./nginx/conf/nginx.conf.
+  --nginx               Skip generating the nginx.conf file - this must be manually created and located at
+                        ./nginx/conf/nginx.conf.
   --create_users        Create users within MySQL.
   --create_connections  Create connections within MySQL.
+  --update_permissions  Update user permissions to allow all users read access to all connections.
 ```
 
 
+## Cleanup of shared directory, and periodic user sync.
+
+```bash
+crontab -e
+
+0 0 * * * root find /root/guacamole-compose/shared/* -mtime +6 -type f -delete
+*/5 * * * * root cd /root/guacamole-compose && python3.8 ./guac-deploy.py --create_users
+```
