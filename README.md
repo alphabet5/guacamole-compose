@@ -47,8 +47,7 @@ optional arguments:
   --clean               Clean the directories automatically created during deployment.
   --deploy              Generate configurations and deploy guacamole using docker-compose.
   --configs             Generate configurations only. Do not deploy guacamole.
-  --nginx               Skip generating the nginx.conf file - this must be manually created and located at
-                        ./nginx/conf/nginx.conf.
+  --nginx               Generate the nginx.conf file located at./nginx/conf/nginx.conf.
   --create_users        Create users within MySQL.
   --create_connections  Create connections within MySQL.
   --update_permissions  Update user permissions to allow all users read access to all connections.

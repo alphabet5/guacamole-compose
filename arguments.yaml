@@ -12,7 +12,7 @@ configs:
   default: False
   action: 'store_true'
 nginx:
-  help: Skip generating the nginx.conf file - this must be manually created and located at ./nginx/conf/nginx.conf.
+  help: Generate the nginx.conf file located at./nginx/conf/nginx.conf.
   default: False
   action: 'store_true'
 create_users:
