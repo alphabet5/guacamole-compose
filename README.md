@@ -60,5 +60,5 @@ optional arguments:
 crontab -e
 
 0 0 * * * find /root/guacamole-compose/shared/* -mtime +6 -type f -delete
-*/5 * * * * cd /root/guacamole-compose && python3.8 ./guac-deploy.py --create_users
+*/5 * * * * cd /root/guacamole-compose && /usr/local/bin/python3.8 ./guac-deploy.py --create_users
 ```
