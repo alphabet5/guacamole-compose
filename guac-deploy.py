@@ -146,6 +146,28 @@ def parse_arguments(arguments_yaml_file='arguments.yaml'):
         return parser.parse_args()
 
 
+def check_container_status(container_name, timeout):
+    import docker
+    client = docker.from_env()
+    active = False
+    counter = 0
+    while not active:
+        try:
+            container = client.containers.get(container_name)
+            if container.attrs['State']['Health']['Status'] == 'healthy':
+                active = False
+            else:
+                print("waiting for mysql...")
+                time.sleep(5)
+                counter += 1
+            if counter > timeout/10:
+                time.sleep(10)
+        except:
+            counter += 1
+            time.sleep(10)
+        if counter > (timeout / 10):
+            time.sleep(10)
+
 import socket
 def isOpen(ip,port):
    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -245,13 +267,7 @@ if __name__ == '__main__':
         import random
         print("Creating users...")
         print("Checking mysql availability...")
-        i = 0
-        while client.containers.get('mysql').attrs['State']['Health']['Status'] != 'healthy' and i < 15:
-            print("waiting for mysql...")
-            time.sleep(5)
-            i += 1
-        if i > 0:
-            time.sleep(10)
+        check_container_status('mysql', 120)
         create_user(username='guacadmin',
                     password=params['guacadmin_password'],
                     mysql_user=params['mysql_user'],
@@ -267,13 +283,7 @@ if __name__ == '__main__':
         import time
         print("Creating connections...")
         print("Checking mysql availability...")
-        i = 0
-        while client.containers.get('mysql').attrs['State']['Health']['Status'] != 'healthy' and i < 15:
-            print("waiting for mysql...")
-            time.sleep(5)
-            i += 1
-        if i > 0:
-            time.sleep(10)
+        check_container_status('mysql', 120)
         computers = get_group_members(**params['ldap_servers']['connections'], type='Computer')
         for computer in computers['entries']:
             if params['auto_connection_dns']:
