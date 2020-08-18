@@ -25,7 +25,7 @@ Python Packages
 - sqlalchemy
 - docker
 - ldap3
-- pymsql
+- pymysql
 - dnspython (v2.0.0)
 
 
