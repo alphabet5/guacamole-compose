@@ -27,7 +27,7 @@ Python Packages
 - ldap3
 - pymysql
 - dnspython (v2.0.0)
-
+- pyyaml
 
 ## Usage
 ```bash

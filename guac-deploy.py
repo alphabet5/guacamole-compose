@@ -231,14 +231,12 @@ if __name__ == '__main__':
             print(docker_compose_cmd.stdout.decode('utf-8'))
             print(docker_compose_cmd.stderr.decode('utf-8'))
         except:
-            print(docker_compose_cmd.stdout.decode('utf-8'))
             print(docker_compose_cmd.stderr.decode('utf-8'))
         try:
             docker_compose_cmd = subprocess.run(['docker-compose up -d'], shell=True, check=True, capture_output=True)
             print(docker_compose_cmd.stdout.decode('utf-8'))
             print(docker_compose_cmd.stderr.decode('utf-8'))
         except:
-            print(docker_compose_cmd.stdout.decode('utf-8'))
             print(docker_compose_cmd.stderr.decode('utf-8'))
 
     if args['create_users']:
