@@ -158,25 +158,27 @@ def check_container_status(container_name, timeout):
                 active = False
             else:
                 print("waiting for mysql...")
-                time.sleep(5)
-                counter += 1
-            if counter > timeout/10:
                 time.sleep(10)
+                counter += 1
         except:
+            import traceback
+            print(traceback.format_exc())
             counter += 1
             time.sleep(10)
         if counter > (timeout / 10):
-            time.sleep(10)
+            print("Timeout reached, mysql not available.")
+            active = True
 
-import socket
+
 def isOpen(ip,port):
-   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-   try:
-      s.connect((ip, int(port)))
-      s.shutdown(2)
-      return True
-   except:
-      return False
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        s.connect((ip, int(port)))
+        s.shutdown(2)
+        return True
+    except:
+        return False
 
 
 if __name__ == '__main__':
