@@ -28,6 +28,8 @@ Python Packages
 - pymysql
 - dnspython (v2.0.0)
 - pyyaml
+- cryptography
+
 
 ## Usage
 ```bash
