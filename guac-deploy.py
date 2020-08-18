@@ -155,7 +155,7 @@ def check_container_status(container_name, timeout):
         try:
             container = client.containers.get(container_name)
             if container.attrs['State']['Health']['Status'] == 'healthy':
-                active = False
+                active = True
             else:
                 print("waiting for mysql...")
                 time.sleep(10)
@@ -166,7 +166,7 @@ def check_container_status(container_name, timeout):
             counter += 1
             time.sleep(10)
         if counter > (timeout / 10):
-            print("Timeout reached, mysql not available.")
+            print("Timeout reached, container not available.")
             active = True
 
 
