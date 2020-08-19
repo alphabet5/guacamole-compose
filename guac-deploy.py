@@ -195,12 +195,10 @@ if __name__ == '__main__':
     if args['clean']:
         print("Running docker-compose down...")
         try:
-            docker_compose_cmd = subprocess.run(['docker-compose down'], shell=True, check=True, capture_output=True)
-            print(docker_compose_cmd.stdout.decode('utf-8'))
-            print(docker_compose_cmd.stderr.decode('utf-8'))
+            docker_compose_cmd = subprocess.run(['docker-compose down'], shell=True)
         except:
-            print(docker_compose_cmd.stdout.decode('utf-8'))
-            print(docker_compose_cmd.stderr.decode('utf-8'))
+            import traceback
+            print(traceback.format_exc())
         print("Clearing generated directories...")
         client.containers.prune()
         client.volumes.prune()
@@ -241,27 +239,18 @@ if __name__ == '__main__':
         with open('./mysql_init/initdb.sh', 'w') as f:
             f.write(mysql_init_template.substitute(**params))
 
-        #git_clone_cmd = subprocess.run('git clone https://github.com/apache/guacamole-client.git', shell=True, capture_output=True)
-        #print(git_clone_cmd.stderr.decode('utf-8'))
-        #print(git_clone_cmd.stdout.decode('utf-8'))
-        #docker_build_cmd = subprocess.run('docker build guacamole-client', shell=True, capture_output=True)
-        #print(docker_build_cmd.stderr.decode('utf-8'))
-        #print(docker_build_cmd.stdout.decode('utf-8'))
-
     if args['deploy']:
         print("Deploying...")
         try:
-            docker_compose_cmd = subprocess.run(['docker-compose pull'], shell=True, check=True, capture_output=True)
-            print(docker_compose_cmd.stdout.decode('utf-8'))
-            print(docker_compose_cmd.stderr.decode('utf-8'))
+            docker_compose_cmd = subprocess.run(['docker-compose pull'], shell=True)
         except:
-            print(docker_compose_cmd.stderr.decode('utf-8'))
+            import traceback
+            print(traceback.format_exc())
         try:
-            docker_compose_cmd = subprocess.run(['docker-compose up -d'], shell=True, check=True, capture_output=True)
-            print(docker_compose_cmd.stdout.decode('utf-8'))
-            print(docker_compose_cmd.stderr.decode('utf-8'))
+            docker_compose_cmd = subprocess.run(['docker-compose up -d'], shell=True)
         except:
-            print(docker_compose_cmd.stderr.decode('utf-8'))
+            import traceback
+            print(traceback.format_exc())
 
     if args['create_users']:
         import time
