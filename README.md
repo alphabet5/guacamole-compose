@@ -58,6 +58,17 @@ optional arguments:
 
 ## Cleanup of shared directory, and periodic user sync.
 
+Note: Check your python executable path, and modify for the cron entry below. 
+
+```bash
+python3.8
+```
+
+```python
+import sys
+print(sys.executable)
+```
+
 ```bash
 crontab -e
 
