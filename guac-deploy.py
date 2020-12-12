@@ -113,20 +113,20 @@ def random_string(stringLength=10):
 def get_group_members(ldap_server, ldap_user, ldap_password, ldap_domain, ldap_group, type='User', **kwargs):
     from ldap3 import Server, Connection, ALL, NTLM, ALL_ATTRIBUTES
     import json
-    d1, d2 = ldap_domain.split('.')
+    #d1, d2 = ldap_domain.split('.')
     server = Server(ldap_server,
                     get_info=ALL)
     conn = Connection(server=server,
-                      user=d1 + '\\' + ldap_user,
+                      user=ldap_domain.split('.')[0] + '\\' + ldap_user,
                       password=ldap_password,
                       auto_bind=True,
                       auto_referrals=False,
                       authentication=NTLM)
     conn.bind()
-    conn.search('dc=' + d1 + ',dc=' + d2 + '',
+    conn.search(','.join(['dc=' + d for d in ldap_domain.split('.')]),
                 '(&(objectCategory=' + type +
                 ')(memberOf:1.2.840.113556.1.4.1941:=CN=' +
-                str(ldap_group) + ',CN=Users,DC=' + d1 + ',DC=' + d2 + '))',
+                str(ldap_group) + ',CN=Users,' + ','.join(['DC=' + d for d in ldap_domain.split('.')]) + '))',
                 attributes=ALL_ATTRIBUTES)
     results = json.loads(conn.response_to_json())
     conn.unbind()
