@@ -1,6 +1,0 @@
-radius-auth-port: 1812
-radius-auth-protocol: mschapv2
-radius-hostname: 172.16.159.220
-radius-retries: 2
-radius-shared-secret: sharedsecret
-radius-timeout: 1

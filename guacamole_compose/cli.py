@@ -55,8 +55,6 @@ def main():
     import sys
 
     pkgdir = sys.modules['guacamole_compose'].__path__[0]
-    print(pkgdir)
-    print(os.listdir(pkgdir))
     args = yamlarg.parse(os.path.join(pkgdir, 'arguments.yaml'))
 
     if args['init']:
@@ -125,7 +123,6 @@ def main():
                 f.write(mysql_init_template.substitute(**params))
             shutil.copy(os.path.join(pkgdir, 'templates/initdb.sql.script'),'./initdb.sql.script')
 
-        if args['deploy']:
             print("Deploying...")
             try:
                 docker_compose_cmd = subprocess.run(['docker-compose pull'], shell=True)
@@ -145,10 +142,11 @@ def main():
             import json
             from copy import deepcopy
             import sqlalchemy
+            import hashlib
 
             server = Server(params['guacamole-properties']['ldap-hostname'],
                             get_info=ALL)
-            ldap_conn = Connection(server=params['ldap']['ldap_server'],
+            ldap_conn = Connection(server=server,
                                    user=params['ldap']['ldap_domain'].split('.')[0] + '\\' + \
                                         params['ldap']['ldap_user'],
                                    password=params['ldap']['ldap_password'],
@@ -168,15 +166,15 @@ def main():
             metadata = sqlalchemy.MetaData()
             guacamole_entity = sqlalchemy.Table('guacamole_entity', metadata, autoload=True, autoload_with=engine)
             guacamole_user = sqlalchemy.Table('guacamole_user', metadata, autoload=True, autoload_with=engine)
-            sql_insert(engine, conn, 'guacamole_entity',
+            sql_insert(engine, sql_conn, 'guacamole_entity',
                        name='guacadmin',
                        type='USER')
             entity_id = sqlalchemy.select([guacamole_entity]).where(guacamole_entity.columns.name == 'guacadmin')
-            result = conn.execute(entity_id)
+            result = sql_conn.execute(entity_id)
             entity_id_value = result.fetchone()[0]
             password_salt = hashlib.sha256(str(uuid.uuid1().bytes).encode('utf-8'))
             password_hash = hashlib.sha256((params['guacadmin_password'] + password_salt.hexdigest().upper()).encode('utf-8'))
-            sql_insert(engine, conn, 'guacamole_user',
+            sql_insert(engine, sql_conn, 'guacamole_user',
                        entity_id=entity_id_value,
                        password_hash=password_hash.digest(),
                        password_salt=password_salt.digest(),

@@ -15,7 +15,6 @@ guacamole-properties:
   ldap-group-name-attribute: cn
 ldap:
 # Users will have access to computers within the same group.
-  ldap_server: 192.167.177.7
   ldap_user: guac_user
   ldap_password: password_123$
   ldap_domain: domain.com
