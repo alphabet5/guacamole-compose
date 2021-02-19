@@ -143,7 +143,8 @@ def main():
             from copy import deepcopy
             import sqlalchemy
             import hashlib
-
+            import uuid
+            from datetime import datetime
             server = Server(params['guacamole-properties']['ldap-hostname'],
                             get_info=ALL)
             ldap_conn = Connection(server=server,
@@ -229,7 +230,7 @@ def main():
             for connection in connections:
                 if connection['connection_id'] not in connection_ids:
                     engine.execute(
-                        'DELETE from guacamole_connection WHERE connection_id = ' + connection['connection_id'] + ';')
+                        'DELETE from guacamole_connection WHERE connection_id = ' + str(connection['connection_id']) + ';')
 
             # Create user groups .
             ldap_conn.search(domain_dn,
@@ -240,6 +241,7 @@ def main():
                              attributes=ALL_ATTRIBUTES)
             ldap_groups = json.loads(ldap_conn.response_to_json())
             for group in ldap_groups['entries']:
+                print(group)
                 cn = group['attributes']['cn']
                 dn = group['attributes']['distinguishedName']
                 sql_insert(engine, sql_conn, 'guacamole_entity',
@@ -250,32 +252,35 @@ def main():
                     sql_statement = 'SELECT connection_id from guacamole_connection WHERE connection_name = "' + \
                                     conn_name + '";'
                     connection_id = engine.execute(sql_statement).fetchone()['connection_id']
-                    if dn in computer['memberOf']:
+                    if dn in computer['attributes']['memberOf']:
                         sql_insert(engine, sql_conn, 'guacamole_connection_permission',
                                    **{'entity_id': entity_id,
                                       'connection_id': connection_id,
                                       'permission': 'READ'})
                     else:
                         engine.execute('DELETE from guacamole_connection_permission WHERE entity_id = ' +
-                                       str(entity_id) + ' AND connection_id = ' + connection_id + ';')
-                for conn_name, groups in params['manual_permissions']:
-                    sql_statement = 'SELECT connection_id from guacamole_connection WHERE connection_name = "' + \
-                                    conn_name + '";'
-                    connection_id = engine.execute(sql_statement).fetchone()['connection_id']
-                    entity_ids = list()
-                    for cn in groups:
-                        entity_id = engine.execute('SELECT entity_id from guacamole_entity WHERE name = "' +
-                                                   cn + '";').fetchone()['entity_id']
+                                       str(entity_id) + ' AND connection_id = ' + str(connection_id) + ';')
+            for conn_name, groups in params['manual_permissions'].items():
+                sql_statement = 'SELECT connection_id from guacamole_connection WHERE connection_name = "' + \
+                                conn_name + '";'
+                connection_id = engine.execute(sql_statement).fetchone()['connection_id']
+                entity_ids = list()
+                for cn in groups:
+                    entity = engine.execute('SELECT entity_id from guacamole_entity WHERE name = "' +
+                                            cn + '";').fetchone()
+                    if entity is not None:
+                        entity_id = entity['entity_id']
                         entity_ids.append(str(entity_id))
-
-                    engine.execute(
-                        'DELETE from guacamole_connection_permission WHERE connection_id = ' + str(connection_id) +
-                        ' AND entity_id NOT IN (' + ','.join(entity_ids) + ');')
-                    for entity_id in entity_ids:
-                        sql_insert(engine, sql_conn, 'guacamole_connection_permission',
-                                   **{'entity_id': entity_id,
-                                      'connection_id': connection_id,
-                                      'permission': 'READ'})
+                    else:
+                        print('Manually specified group "' + cn + '" does not exist.')
+                if len(entity_ids) > 0:
+                    engine.execute('DELETE from guacamole_connection_permission WHERE connection_id = ' +
+                                   str(connection_id) + ' AND entity_id NOT IN (' + ','.join(entity_ids) + ');')
+                for entity_id in entity_ids:
+                    sql_insert(engine, sql_conn, 'guacamole_connection_permission',
+                               **{'entity_id': entity_id,
+                                  'connection_id': connection_id,
+                                  'permission': 'READ'})
             # Give guacadmin user permission to all connections and user groups.
             sql_statement = 'SELECT entity_id FROM guacamole_entity WHERE name = "guacadmin"'
             guacadmin_entity_id = engine.execute(sql_statement).fetchone()['entity_id']
@@ -287,8 +292,9 @@ def main():
                                permission=permission)
             groups = engine.execute('SELECT * from guacamole_entity WHERE type = "USER_GROUP"').fetchall()
             for group in groups:
+                print(group)
                 for permission in ['READ', 'UPDATE', 'DELETE', 'ADMINISTER']:
-                    sql_insert(engine, sql_conn, 'guacamole_connection_permission',
+                    sql_insert(engine, sql_conn, 'guacamole_user_group_permission',
                                entity_id=guacadmin_entity_id,
                                affected_user_group_id=group['entity_id'],
                                permission=permission)
