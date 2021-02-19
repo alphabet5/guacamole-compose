@@ -162,7 +162,23 @@ def main():
                                               params['mysql_user'] + ':' +
                                               params['mysql_password'] + '@127.0.0.1:3306/guacamole_db')
             sql_conn = engine.connect()
-
+            # Set guacadmin password
+            metadata = sqlalchemy.MetaData()
+            guacamole_entity = sqlalchemy.Table('guacamole_entity', metadata, autoload=True, autoload_with=engine)
+            guacamole_user = sqlalchemy.Table('guacamole_user', metadata, autoload=True, autoload_with=engine)
+            sql_insert(engine, conn, 'guacamole_entity',
+                       name='guacadmin',
+                       type='USER')
+            entity_id = sqlalchemy.select([guacamole_entity]).where(guacamole_entity.columns.name == 'guacadmin')
+            result = conn.execute(entity_id)
+            entity_id_value = result.fetchone()[0]
+            password_salt = hashlib.sha256(str(uuid.uuid1().bytes).encode('utf-8'))
+            password_hash = hashlib.sha256((params['guacadmin_password'] + password_salt.hexdigest().upper()).encode('utf-8'))
+            sql_insert(engine, conn, 'guacamole_user',
+                       entity_id=entity_id_value,
+                       password_hash=password_hash.digest(),
+                       password_salt=password_salt.digest(),
+                       password_date=datetime.now())
             # Create connections
             connections = list()
             connection_ids = dict()

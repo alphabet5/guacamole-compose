@@ -1,2 +1,5 @@
 .idea/*
 .DS_Store
+build/*
+dist/*
+guacamole_compose.egg-info/*
