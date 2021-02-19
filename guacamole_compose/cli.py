@@ -143,7 +143,7 @@ def main():
             # Connect to ldap
             from ldap3 import Server, Connection, ALL, NTLM, ALL_ATTRIBUTES
             import json
-            from copy import deepcopyz
+            from copy import deepcopy
             import sqlalchemy
 
             server = Server(params['guacamole-properties']['ldap-hostname'],
@@ -158,6 +158,8 @@ def main():
             domain_dn = ','.join(['DC=' + d for d in params['ldap']['ldap_domain'].split('.')])
 
             # Connect to MySQL
+            print("Waiting for mysql availability...")
+            check_container_status('mysql', 120)
             engine = sqlalchemy.create_engine('mysql+pymysql://' +
                                               params['mysql_user'] + ':' +
                                               params['mysql_password'] + '@127.0.0.1:3306/guacamole_db')
