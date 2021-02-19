@@ -18,7 +18,7 @@ This set of scripts and templates automates the deployment process for guacamole
 
 - docker
 - docker-compose
-- python3.8
+- python3 (3.9)
 - git
 
 Python Packages
@@ -33,6 +33,13 @@ Python Packages
 
 ## Usage
 ```bash
+python3.9 -m pip install --upgrade guacamole_compose
+python3.9 -m guacamole_compose --deploy --create_users --create_connections
+```
+
+
+## Old Usage
+```bash
 git clone https://github.com/alphabet5/guacamole-compose.git
 cd guacamole-compose
 ```
@@ -41,18 +48,16 @@ cd guacamole-compose
 python3.8 ./guac-deploy.py --deploy --create_users --create_connections
 ```
 ```bash
-usage: guac-deploy.py [-h] [--clean] [--deploy] [--configs] [--nginx] [--create_users] [--create_connections]
-                      [--update_permissions]
+usage: guacamole-compose [-h] [--init] [--clean] [--deploy] [--nginx] [--ldap-groups]
 
 optional arguments:
-  -h, --help            show this help message and exit
-  --clean               Clean the directories automatically created during deployment.
-  --deploy              Generate configurations and deploy guacamole using docker-compose.
-  --configs             Generate configurations only. Do not deploy guacamole.
-  --nginx               Generate the nginx.conf file located at./nginx/conf/nginx.conf.
-  --create_users        Create users within MySQL.
-  --create_connections  Create connections within MySQL.
-  --update_permissions  Update user permissions to allow all users read access to all connections.
+  -h, --help     show this help message and exit
+  --init         Initialize the directory and files required.
+  --clean        Clean the directories automatically created during deployment.
+  --deploy       Generate configurations and deploy guacamole using docker-compose.
+  --nginx        Generate the nginx.conf file located at./nginx/conf/nginx.conf.
+  --ldap-groups  Used to create/update connections and groups using ldap.
+
 ```
 
 

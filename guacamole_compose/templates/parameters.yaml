@@ -1,0 +1,71 @@
+hostname: localhost # Template usage for nginx.conf
+guacadmin_password: password # Used to set the password for the guacadmin user.
+mysql_user: guacamole_user # Template usage docker-compose.yml
+mysql_password: password # Template usage docker-compose.yml, initdb.sh
+guacamole-properties:
+  ldap-hostname: 192.168.177.7
+  ldap-port: 389
+  ldap-encryption-method: none
+  ldap-user-base-dn: CN=Users,DC=domain,DC=com
+  ldap-username-attribute: samAccountName
+  ldap-search-bind-dn: CN=guac_user,CN=Users,DC=domain,DC=com
+  ldap-search-bind-password: password_123$
+  ldap-user-search-filter: (&(objectCategory=User)(memberOf:1.2.840.113556.1.4.1941:=CN=guacamole,CN=Users,dc=domain,dc=com))
+  ldap-group-base-dn: DC=domain,DC=com
+  ldap-group-name-attribute: cn
+ldap:
+# Users will have access to computers within the same group.
+  ldap_server: 192.167.177.7
+  ldap_user: guac_user
+  ldap_password: password_123$
+  ldap_domain: domain.com
+  ldap_group: guacamole
+# If auto_connection_dns is false, auto_connection_dns_resolver is used to fetch the ip address of the computer.
+# This ip address will be used as the hostname for the connection so DNS will not be required for every connection attempt.
+# If your connections use DHCP / dynamic addresses set auto_connection_dns to true.
+auto_connection_dns: false
+auto_connection_dns_resolver: 192.168.177.7
+auto_connections:
+  connection:
+    protocol: 'rdp'
+  parameters:
+    console-audio: 'true'
+    create-drive-path: 'true'
+    drive-name: 'shared'
+    drive-path: '/shared'
+    enable-drive: 'true'
+    enable-printing: 'true'
+    ignore-cert: 'true'
+    port: '3389'
+    printer-name: 'RemotePrinter'
+    security: 'nla'
+    username: '${GUAC_USERNAME}'
+    password: '${GUAC_PASSWORD}'
+    domain: 'domain.com'
+manual_connections:
+  - connection:
+      connection_name: 'TEST-CONNECTION.domain.com - 172.16.159.220'
+      protocol: 'rdp'
+    parameters:
+      hostname: '172.16.159.220'
+      console-audio: 'true'
+      console-audio': 'true'
+      create-drive-path: 'true'
+      drive-name: 'shared'
+      drive-path: '/shared'
+      enable-drive: 'true'
+      enable-printing: 'true'
+      ignore-cert: 'true'
+      port: '3389'
+      printer-name: 'RemotePrinter'
+      security: 'nla'
+      username: '${GUAC_USERNAME}'
+      password: '${GUAC_PASSWORD}'
+      domain: 'domain.com'
+# If manual connections are specified, permissions are required to be set for all manual connections.
+# List all ldap groups under the connection_name for each manual connection. Any user in the ldap group
+# will have permission to connect to that VM.
+manual_permissions:
+  'TEST-CONNECTION.domain.com - 172.16.159.220':
+    - group1
+    - group2
