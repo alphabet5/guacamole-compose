@@ -73,3 +73,12 @@ crontab -e
 
 0 0 * * * find /root/shared/* -mtime +6 -type f -delete
 ```
+
+## Updating the package and uploading to pypi
+Make sure the version information is updated before uploading. You cannot upload 2 copies with the same version.
+
+```bash
+sudo rm -r dist
+python3.9 setup.py bdist_wheel --universal
+twine upload dist/*
+```
