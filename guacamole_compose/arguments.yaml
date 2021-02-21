@@ -1,0 +1,21 @@
+---
+init:
+  help: Initialize the directory and files required.
+  default: False
+  action: 'store_true'
+clean:
+  help: Clean the directories automatically created during deployment.
+  default: False
+  action: 'store_true'
+deploy:
+  help: Generate configurations and deploy guacamole using docker-compose.
+  default: False
+  action: 'store_true'
+nginx:
+  help: Generate the nginx.conf file located at./nginx/conf/nginx.conf.
+  default: False
+  action: 'store_true'
+ldap:
+  help: Used to create/update connections, groups, and permissions using ldap.
+  default: False
+  action: 'store_true'
