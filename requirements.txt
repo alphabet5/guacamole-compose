@@ -5,6 +5,8 @@ docker
 sqlalchemy
 yamlarg
 pyyaml
+cryptography
+cffi
 
 ###### Requirements with Version Specifiers ######
 dnspython >= 2.0.0

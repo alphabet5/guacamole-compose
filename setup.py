@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="guacamole-compose",
-    version="0.0.5",
+    version="0.0.9",
     author="John Burt",
     author_email="johnburt.jab@gmail.com",
     description="Easy deployment of Apache Guacamole.",
@@ -22,4 +22,5 @@ setuptools.setup(
     entry_points={'console_scripts': ['guacamole-compose=guacamole_compose.cli:main']},
     include_package_data=True,
     package_data={'guacamole_compose': ['*', 'templates/*'], },
+    install_requires=['ldap3', 'pymysql', 'docker', 'sqlalchemy', 'yamlarg', 'pyyaml', 'cryptography', 'cffi'],
 )
