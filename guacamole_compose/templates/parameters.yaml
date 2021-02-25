@@ -3,18 +3,23 @@ guacadmin_password: password # Used to set the password for the guacadmin user.
 mysql_user: guacamole_user # Template usage docker-compose.yml
 mysql_password: password # Template usage docker-compose.yml, initdb.sh
 guacamole-properties:
-  ldap-hostname: 192.168.177.7
+  ldap-hostname: 192.168.177.7 # This can be the domain name to use any one of the domain controllers as the ldap server.
   ldap-port: 389
   ldap-encryption-method: none
   ldap-user-base-dn: CN=Users,DC=domain,DC=com
   ldap-username-attribute: samAccountName
-  ldap-search-bind-dn: CN=guac_user,CN=Users,DC=domain,DC=com
+  ldap-search-bind-dn: CN=guac_user,CN=Users,DC=domain,DC=com # This is the service account for guacamole
   ldap-search-bind-password: password_123$
   ldap-user-search-filter: (&(objectCategory=User)(memberOf:1.2.840.113556.1.4.1941:=CN=guacamole,CN=Users,dc=domain,dc=com))
   ldap-group-base-dn: DC=domain,DC=com
   ldap-group-name-attribute: cn
 ldap:
-# Users will have access to computers within the same group.
+  # This section contains a service account for guacamole-compose, as well as the parent group that contains the child groups.
+  # Child groups will contain users and computers. Computers will have connections created, and permission assigned to a matching
+  # guacamole group.
+  # If group1 is a member of ldap_group, group1 will be created as a user group within guacamole)
+  # If computer1 is a member of group1, it will have a connection created for it,
+  # and users withing group1 will have permission to read that connection.
   ldap_user: guac_user
   ldap_password: password_123$
   ldap_domain: domain.com
@@ -27,7 +32,7 @@ auto_connection_dns_resolver: 192.168.177.7
 auto_connections:
   connection:
     protocol: 'rdp'
-  parameters:
+  parameters: # Connection parameters are defined here under 'Configuring Connections': https://guacamole.apache.org/doc/gug/configuring-guacamole.html
     console-audio: 'true'
     create-drive-path: 'true'
     drive-name: 'shared'
@@ -63,7 +68,7 @@ manual_connections:
       domain: 'domain.com'
 # If manual connections are specified, permissions are required to be set for all manual connections.
 # List all ldap groups under the connection_name for each manual connection. Any user in the ldap group
-# will have permission to connect to that VM.
+# will have permission to connect with the specific connection.
 manual_permissions:
   'TEST-CONNECTION.domain.com - 172.16.159.220':
     - group1
