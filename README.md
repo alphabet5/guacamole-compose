@@ -37,9 +37,25 @@ Python Packages
 
 
 ## Usage
+
+This requires active directory to be configured with a user group containing child user groups that will be synced to Apache Guacamole.
+
+For example:
+
+- guacamole/group1
+- guacamole/group2
+
+- Computer1 is a member of group1
+- Computer2 is a member of group2
+
+If a user logs in and is a member of group1, they will have access to the connection created for Computer1. 
+
+All computers that are in child groups will be created based off of the configuration settings in parameters.yaml.
+
 ```bash
 sudo python3.9 -m pip install --upgrade guacamole-compose
 sudo guacamole-compose --init
+vi parameters.yaml
 sudo guacamole-compose --deploy --ldap
 
 % guacamole-compose --help
@@ -55,19 +71,9 @@ optional arguments:
 ```
 
 
-## Cleanup of shared directory, and periodic user sync.
+## Cleanup of shared directory
 
-Note: Check your python executable path, and modify for the cron entry below. Or just use 'python3.9' in the cron job, instead of the full path.
-
-```bash
-python3.9
-```
-
-```python
-import sys
-print(sys.executable)
-```
-
+The template parameters.yaml uses a common folder called 'shared' for transferring files in and out of the remote computers. To prevent this folder from growing too large, you can periodically remove files older than ~6 days with a cron job. This example is shown below.
 ```bash
 crontab -e
 
