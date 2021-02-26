@@ -9,8 +9,9 @@ This set of scripts and templates automates the deployment process for guacamole
 - Generates the mysql initialization script, to configure a new mysql database.
 - Generates an nginx configuration.
 - Has parameter options and templates, so you should just have to change a single parameter file for each deployment.
-- Adds users to mysql from ldap.
+- Adds user groups to mysql from ldap.
 - Configures connections from ldap.
+- Configures user groups with permissions to connections
 - Configures additional manual connections from the paramters.yaml file.
 
 
@@ -29,7 +30,7 @@ Python Packages
     - docker
     - ldap3
     - pymysql
-    - dnspython (v2.0.0)
+    - dnspython
     - pyyaml
     - cryptography
     - yamlarg
