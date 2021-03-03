@@ -1,0 +1,32 @@
+global
+  log stdout format raw local0
+  daemon
+  # Default ciphers to use on SSL-enabled listening sockets.
+  # For more information, see ciphers(1SSL).
+  ssl-default-bind-ciphers kEECDH+aRSA+AES:kRSA+AES:+AES256:RC4-SHA:!kEDH:!LOW:!EXP:!MD5:!aNULL:!eNULL
+
+resolvers docker_resolver
+    nameserver dns 127.0.0.11:53
+
+defaults
+  log     global
+  mode    http
+  option  httplog
+  option  dontlognull
+
+frontend http
+    # Redirect to https
+    bind *:80
+    mode http
+    redirect scheme https code 301
+
+frontend https
+    bind *:443 ssl crt /usr/local/etc/certs/
+    http-response set-header Strict-Transport-Security "max-age=16000000; includeSubDomains; preload;"
+    acl is_root path /
+    http-request redirect  code 301  location http://%[hdr(host)]/guacamole if is_root
+    acl use_guacamole hdr(host) -i ${hostname}
+    use_backend guacamole if use_guacamole
+
+backend guacamole
+    server guacamole1 guacamole:8080
