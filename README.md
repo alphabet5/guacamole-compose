@@ -17,10 +17,18 @@ This set of scripts and templates automates the deployment process for guacamole
 
 ## Requirements
 
+Tested on Ubuntu 20.04 LTS
+
 - docker
 - docker-compose
 - python3 (3.9)
 - pip
+
+```bash
+sudo apt update && sudo apt upgrade -y && sudo apt install docker docker-compose python3.9 -y
+curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
+sudo python3.9 ./get-pip.py
+```
 
 Python Packages
 - guacamole-compose
@@ -36,39 +44,60 @@ Python Packages
     - yamlarg
     - cffi
 
+```bash
+sudo python3.9 -m pip install guacamole-compose
+```
+
+Note: sudo is needed in the above command only if docker requires sudo privileges to be ran. This is the case by default when running docker.
 
 ## Usage
 
 This requires active directory to be configured with a user group containing child user groups that will be synced to Apache Guacamole.
 
-For example:
+An example structure in active directory.
+```yaml
+- guacamole: # 'guacamole' is the base user group, configured in parameters.yaml under ldap-user-search-filter and ldap/ldap_group.
+    - user_group1: # This is a child group, a member of the 'guacamole' user group. This group will be created in apache guacamole.
+        - computer1 # This is a computer object whos connection will be automatically created. Permission to read/connect/view will be granted to members of user_group1, or user_group2 - since the computer object also exists in user_group2
+        - user1 # user1 will not have a user created in guacamole, but will be able to view any connections it's in a group with.
+    - user_group2:
+        - computer1
+        - computer2
+        - user2
+```
 
-- guacamole/group1
-- guacamole/group2
+- If a user logs in and is a member of group1, they will have access to the connection created for computer1. 
+- All computers that are in child groups will have connections created based off of the configuration settings in parameters.yaml. (auto_connections)
 
-- Computer1 is a member of group1
-- Computer2 is a member of group2
+Steps:
+- Run `guacamole-compose --init`
+- Edit the paramters.yaml file for the specific deployment.
+- Edit either the nginx.conf or haproxy.cfg files depending on which rwp you prefer.
+    - The default haproxy.cfg and nginx.conf files use http 80 over localhost for testing.
+    - If you --deploy with the --haproxy_cfg or --nginx flags, it will overwrite the existing nginx.conf/haproxy.cfg using a template. This is most likely not what you want.
+- Fetch certificates, and place in the corresponding folder.
+- Deploy guacamole with `sudo guacamole-compose --deploy --haproxy --ldap`
+- If you want to update your user groups / connections after active directory changes run `sudo guacamole-compose --ldap`
 
-If a user logs in and is a member of group1, they will have access to the connection created for Computer1. 
 
-All computers that are in child groups will be created based off of the configuration settings in parameters.yaml.
 
 ```bash
-sudo python3.9 -m pip install --upgrade guacamole-compose
 sudo guacamole-compose --init
 vi parameters.yaml
 sudo guacamole-compose --deploy --ldap
 
 % guacamole-compose --help
-usage: guacamole-compose [-h] [--init] [--clean] [--deploy] [--nginx] [--ldap]
+usage: guacamole-compose [-h] [--init] [--clean] [--deploy] [--nginx] [--haproxy] [--haproxy_cfg] [--ldap]
 
 optional arguments:
-  -h, --help  show this help message and exit
-  --init      Initialize the directory and files required.
-  --clean     Clean the directories automatically created during deployment.
-  --deploy    Generate configurations and deploy guacamole using docker-compose.
-  --nginx     Generate the nginx.conf file located at./nginx/conf/nginx.conf.
-  --ldap      Used to create/update connections, groups, and permissions using ldap.
+  -h, --help     show this help message and exit
+  --init         Initialize the directory and files required.
+  --clean        Clean the directories automatically created during deployment.
+  --deploy       Generate configurations and deploy guacamole using docker-compose.
+  --nginx        Generate the nginx.conf file located at./nginx/conf/nginx.conf.
+  --haproxy      Deploy with haproxy instead of nginx.
+  --haproxy_cfg  Generate the haproxy .cfg file using values from parameters.yaml
+  --ldap         Used to create/update connections, groups, and permissions using ldap.
 ```
 
 
@@ -78,7 +107,7 @@ The template parameters.yaml uses a common folder called 'shared' for transferri
 ```bash
 crontab -e
 
-0 0 * * * find /root/shared/* -mtime +6 -type f -delete
+0 0 * * * find /home/user/shared/* -mtime +6 -type f -delete
 ```
 
 ## Updating the package and uploading to pypi
