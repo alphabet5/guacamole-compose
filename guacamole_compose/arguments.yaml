@@ -15,6 +15,14 @@ nginx:
   help: Generate the nginx.conf file located at./nginx/conf/nginx.conf.
   default: False
   action: 'store_true'
+haproxy:
+  help: Deploy with haproxy instead of nginx.
+  default: False
+  action: 'store_true'
+haproxy_cfg:
+  help: Generate the haproxy .cfg file using values from parameters.yaml
+  default: False
+  action: 'store_true'
 ldap:
   help: Used to create/update connections, groups, and permissions using ldap.
   default: False

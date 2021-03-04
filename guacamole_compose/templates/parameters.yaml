@@ -1,4 +1,4 @@
-hostname: localhost # Template usage for nginx.conf
+hostname: localhost # Template usage for nginx.conf or haproxy.cfg
 guacadmin_password: password # Used to set the password for the guacadmin user.
 mysql_user: guacamole_user # Template usage docker-compose.yml
 mysql_password: password # Template usage docker-compose.yml, initdb.sh

@@ -64,11 +64,14 @@ def main():
                        './nginx',
                        './nginx/conf',
                        './nginx/certs',
-                       './nginx/auth']:
+                       './nginx/auth',
+                       './haproxy',
+                       './haproxy/certs']:
             if not os.path.exists(folder):
                 os.makedirs(folder)
         shutil.copy(os.path.join(pkgdir, 'templates/parameters.yaml'), os.getcwd())
         shutil.copy(os.path.join(pkgdir, 'templates/nginx_init.conf'), './nginx/conf/nginx.conf')
+        shutil.copy(os.path.join(pkgdir, 'templates/haproxy_init.cfg'), './haproxy/haproxy.cfg')
     else:
         params = yaml.load(open('parameters.yaml', 'r'), Loader=yaml.FullLoader)
         client = docker.from_env()
@@ -85,7 +88,7 @@ def main():
             client.volumes.prune()
             # Commented out the image prune - so if guacamole images weren't
             # updated, you don't have to download them again.
-            client.images.prune(filters={'dangling': True})
+            # client.images.prune(filters={'dangling': True})
             for folder in ['./shared',
                            './mysql',
                            './init']:
@@ -103,6 +106,11 @@ def main():
                                                            'r').read())
                 with open('./nginx/conf/nginx.conf', 'w') as f:
                     f.write(nginx_conf_template.substitute(**params))
+            if args['haproxy_cfg']:
+                haproxy_conf_template = string.Template(open(os.path.join(pkgdir, 'templates/haproxy.template'),
+                                                             'r').read())
+                with open('./haproxy/haproxy.cfg', 'w') as f:
+                    f.write(haproxy_conf_template.substitute(**params))
             with open('./guacamole_home/guacamole.properties', 'w') as f:
                 yaml.dump(params['guacamole-properties'], open('./guacamole_home/guacamole.properties', 'w'))
             if 'ldap-hostname' in params['guacamole-properties']:
@@ -113,8 +121,12 @@ def main():
                 # Copies the guacamole-auth-radius if the new method is used without ldap - defaults to radius.
                 shutil.copy(os.path.join(pkgdir, 'templates/guacamole-auth-radius-1.3.0.jar'),
                             os.path.join(os.getcwd(), 'guacamole_home/extensions'))
-            docker_compose_template = string.Template(
-                open(os.path.join(pkgdir, 'templates/docker-compose.yml.template'), 'r').read())
+            if args['haproxy']:
+                docker_compose_template = string.Template(
+                    open(os.path.join(pkgdir, 'templates/docker-compose.yml.haproxy.template'), 'r').read())
+            else:
+                docker_compose_template = string.Template(
+                    open(os.path.join(pkgdir, 'templates/docker-compose.yml.template'), 'r').read())
             with open('./docker-compose.yml', 'w') as f:
                 f.write(docker_compose_template.substitute(**params))
             mysql_init_template = string.Template(
