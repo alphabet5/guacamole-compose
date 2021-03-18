@@ -100,6 +100,14 @@ optional arguments:
   --ldap         Used to create/update connections, groups, and permissions using ldap.
 ```
 
+## Updating groups and connections from ldap
+
+After changes are made to user groups or computers within the ldap server, you can run the following command to automatically update guacamole user group permissions and connections.
+
+```bash
+sudo guacamole-compose --ldap
+```
+
 
 ## Cleanup of shared directory
 
