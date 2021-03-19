@@ -100,9 +100,21 @@ optional arguments:
   --ldap         Used to create/update connections, groups, and permissions using ldap.
 ```
 
+## Fixing shared directory permissions.
+
+If docker requires being ran as sudo, it wil automatically create the `shared` directory. You should modify the permissions of this directory to enable uploads.
+
+An indication of this error would be the following message:
+`You do not have permission to upload this file. If you require access, please check your system settings, or check with your system administrator.`
+
+```bash
+sudo chown user:user shared
+```
+
+
 ## Updating groups and connections from ldap
 
-After changes are made to user groups or computers within the ldap server, you can run the following command to automatically update guacamole user group permissions and connections.
+After changes are made to user groups or computers within the ldap server, you can run the following command to automatically update guacamole user group permissions and connections. You do not need to redeploy. 
 
 ```bash
 sudo guacamole-compose --ldap
