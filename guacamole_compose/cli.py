@@ -71,10 +71,13 @@ def main():
                        './shared']:
             if not os.path.exists(folder):
                 os.makedirs(folder)
-        shutil.copy(os.path.join(pkgdir, 'templates/parameters.yaml'), os.getcwd())
-        shutil.copy(os.path.join(pkgdir, 'templates/nginx_init.conf'), './nginx/conf/nginx.conf')
-        shutil.copy(os.path.join(pkgdir, 'templates/haproxy_init.cfg'), './haproxy/haproxy.cfg')
-        shutil.copy(os.path.join(pkgdir, 'templates/server.xml'), './tomcat/server.xml')
+        pkgfiles = {'parameters.yaml': './parameters.yaml',
+                    'nginx_init.conf': './nginx/conf/nginx.conf',
+                    'haproxy_init.cfg': './haproxy/haproxy.cfg',
+                    'server.xml': './tomcat/server.xml'}
+        for pkgfile, dstfile in pkgfiles.items():
+            if not os.path.isfile(dstfile):
+                shutil.copy(os.path.join(pkgdir, 'templates/' + pkgfile), dstfile)
     else:
         params = yaml.load(open('parameters.yaml', 'r'), Loader=yaml.FullLoader)
         client = docker.from_env()
