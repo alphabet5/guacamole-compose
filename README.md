@@ -120,6 +120,11 @@ twine upload dist/*
 
 ## Changelog
 
+### 0.1.4
+#### Fixed
+- internalProxies in server.xml to be more generic and work no matter the internal rwp address.
+- Added checks for `guacamole-compose --init` to not overwrite existing files.
+
 ### 0.1.3
 #### Fixed
 - create the ./shared folder with the --init command (without sudo). This fixes a permission issue where users would have to `sudo chown user:user ./shared` for file transfers.
