@@ -100,18 +100,6 @@ optional arguments:
   --ldap         Used to create/update connections, groups, and permissions using ldap.
 ```
 
-## Fixing shared directory permissions.
-
-If docker requires being ran as sudo, it wil automatically create the `shared` directory. You should modify the permissions of this directory to enable uploads.
-
-An indication of this error would be the following message:
-`You do not have permission to upload this file. If you require access, please check your system settings, or check with your system administrator.`
-
-```bash
-sudo chown user:user shared
-```
-
-
 ## Cleanup of shared directory
 
 The template parameters.yaml uses a common folder called 'shared' for transferring files in and out of the remote computers. To prevent this folder from growing too large, you can periodically remove files older than ~6 days with a cron job. This example is shown below.
