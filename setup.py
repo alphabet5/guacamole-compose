@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="guacamole-compose",
-    version="0.1.1",
+    version="0.1.3",
     author="John Burt",
     author_email="johnburt.jab@gmail.com",
     description="Easy deployment of Apache Guacamole.",
