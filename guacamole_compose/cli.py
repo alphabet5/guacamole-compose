@@ -66,12 +66,15 @@ def main():
                        './nginx/certs',
                        './nginx/auth',
                        './haproxy',
-                       './haproxy/certs']:
+                       './haproxy/certs',
+                       './tomcat',
+                       './shared']:
             if not os.path.exists(folder):
                 os.makedirs(folder)
         shutil.copy(os.path.join(pkgdir, 'templates/parameters.yaml'), os.getcwd())
         shutil.copy(os.path.join(pkgdir, 'templates/nginx_init.conf'), './nginx/conf/nginx.conf')
         shutil.copy(os.path.join(pkgdir, 'templates/haproxy_init.cfg'), './haproxy/haproxy.cfg')
+        shutil.copy(os.path.join(pkgdir, 'templates/server.xml'), './tomcat/server.xml')
     else:
         params = yaml.load(open('parameters.yaml', 'r'), Loader=yaml.FullLoader)
         client = docker.from_env()

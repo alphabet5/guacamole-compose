@@ -82,7 +82,7 @@ Steps:
 
 
 ```bash
-sudo guacamole-compose --init
+guacamole-compose --init
 vi parameters.yaml
 sudo guacamole-compose --deploy --ldap
 
@@ -112,15 +112,6 @@ sudo chown user:user shared
 ```
 
 
-## Updating groups and connections from ldap
-
-After changes are made to user groups or computers within the ldap server, you can run the following command to automatically update guacamole user group permissions and connections. You do not need to redeploy. 
-
-```bash
-sudo guacamole-compose --ldap
-```
-
-
 ## Cleanup of shared directory
 
 The template parameters.yaml uses a common folder called 'shared' for transferring files in and out of the remote computers. To prevent this folder from growing too large, you can periodically remove files older than ~6 days with a cron job. This example is shown below.
@@ -138,3 +129,21 @@ sudo rm -r dist
 python3.9 setup.py bdist_wheel --universal
 twine upload dist/*
 ```
+
+## Changelog
+
+### 0.1.3
+#### Fixed
+- create the ./shared folder with the --init command (without sudo). This fixes a permission issue where users would have to `sudo chown user:user ./shared` for file transfers.
+- Updated README.md to remove `sudo` from in front of `guacamole-compose --init`
+- Updated the internal proxies from 127.0.0.1 to the default. (as the rwp container will not be 127.0.0.1 to the guacamole container.) This is safe as the guacamole container does not have any exposed ports.
+
+### 0.1.2
+#### Added
+- server.xml so that the guacamole webpage correctly shows the remote address via X-Forwarded-For.
+- `option forwardfor` in the haproxy templates.
+- code in the init section to create the server.xml file from the template in ./tomcat folder.
+  
+#### Fixed
+- Updated nginx init conf with max body size of 10000 (for large file transfers.) Nginx configuration option already had this set.
+- Duplicate documentation section in README.md on updating groups and connections.

@@ -50,6 +50,7 @@ services:
     restart: always
     volumes:
       - ./guacamole_home:/guacamole_home:ro
+      - ./tomcat/server.xml:/usr/local/tomcat/conf/server.xml:ro
   haproxy:
     container_name: haproxy
     depends_on:

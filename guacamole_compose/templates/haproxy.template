@@ -22,6 +22,7 @@ frontend http
 
 frontend https
     bind *:443 ssl crt /usr/local/etc/certs/
+    option forwardfor
     http-response set-header Strict-Transport-Security "max-age=16000000; includeSubDomains; preload;"
     acl is_root path /
     http-request redirect  code 301  location http://%[hdr(host)]/guacamole if is_root
