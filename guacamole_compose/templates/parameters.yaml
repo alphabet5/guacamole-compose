@@ -1,7 +1,7 @@
 hostname: localhost # Template usage for nginx.conf or haproxy.cfg
 guacadmin_password: password # Used to set the password for the guacadmin user.
 mysql_user: guacamole_user # Template usage docker-compose.yml
-mysql_password: password # Template usage docker-compose.yml, initdb.sh
+mysql_password: password # Template usage docker-compose.yml, initdb.sh. Password should be alphanumeric, with no special characters for the mysql script, yaml, or docker-compose to interpret incorrectly.
 guacamole-properties:
   ldap-hostname: 192.168.177.7 # This can be the domain name to use any one of the domain controllers as the ldap server.
   ldap-port: 389
@@ -13,17 +13,6 @@ guacamole-properties:
   ldap-user-search-filter: (&(objectCategory=User)(memberOf:1.2.840.113556.1.4.1941:=CN=guacamole,CN=Users,dc=domain,dc=com))
   ldap-group-base-dn: DC=domain,DC=com
   ldap-group-name-attribute: cn
-ldap:
-  # This section contains a service account for guacamole-compose, as well as the parent group that contains the child groups.
-  # Child groups will contain users and computers. Computers will have connections created, and permission assigned to a matching
-  # guacamole group.
-  # If group1 is a member of ldap_group, group1 will be created as a user group within guacamole)
-  # If computer1 is a member of group1, it will have a connection created for it,
-  # and users withing group1 will have permission to read that connection.
-  ldap_user: guac_user
-  ldap_password: password_123$
-  ldap_domain: domain.com
-  ldap_group: guacamole
 # If auto_connection_dns is false, auto_connection_dns_resolver is used to fetch the ip address of the computer.
 # This ip address will be used as the hostname for the connection so DNS will not be required for every connection attempt.
 # If your connections use DHCP / dynamic addresses set auto_connection_dns to true.

@@ -25,9 +25,12 @@ Tested on Ubuntu 20.04 LTS
 - pip
 
 ```bash
-sudo apt update && sudo apt upgrade -y && sudo apt install docker docker-compose python3.9 -y
-curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
-sudo python3.9 ./get-pip.py
+sudo apt update && \
+    sudo apt upgrade -y && \
+    sudo apt install docker docker-compose python3.9 -y && \
+    sudo systemctl enable docker && \
+    curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py && \
+    sudo python3.9 ./get-pip.py
 ```
 
 Python Packages
@@ -87,7 +90,7 @@ vi parameters.yaml
 sudo guacamole-compose --deploy --ldap
 
 % guacamole-compose --help
-usage: guacamole-compose [-h] [--init] [--clean] [--deploy] [--nginx] [--haproxy] [--haproxy_cfg] [--ldap]
+usage: guacamole-compose [-h] [--init] [--clean] [--deploy] [--nginx] [--haproxy] [--haproxy_cfg] [--ldap] [--version]
 
 optional arguments:
   -h, --help     show this help message and exit
@@ -98,6 +101,7 @@ optional arguments:
   --haproxy      Deploy with haproxy instead of nginx.
   --haproxy_cfg  Generate the haproxy .cfg file using values from parameters.yaml
   --ldap         Used to create/update connections, groups, and permissions using ldap.
+  --version      Outputs version information.
 ```
 
 ## Cleanup of shared directory
@@ -119,6 +123,20 @@ twine upload dist/*
 ```
 
 ## Changelog
+
+### 0.1.5
+#### Fixed
+- Added clarification to parameters.yaml template to specify an alphanumeric password for the mysql user.
+
+#### Added
+- Version information with the --version flag.
+- Color printing for warnings and errors.
+- Output a warning if --init is run as sudo. (Creates the ./shared directory with incorrect permissions.)
+- client.image.prune after deploying to clean up unused images.
+
+#### Other
+- Removed duplicate import of shutil.
+- Removed the 'ldap' section in parameters.yaml and instead use the ldap information within the guacamole-properties section.
 
 ### 0.1.4
 #### Fixed

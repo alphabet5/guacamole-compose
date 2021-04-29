@@ -27,3 +27,7 @@ ldap:
   help: Used to create/update connections, groups, and permissions using ldap.
   default: False
   action: 'store_true'
+version:
+  help: Outputs version information.
+  default: False
+  action: 'store_true'
