@@ -124,6 +124,10 @@ twine upload dist/*
 
 ## Changelog
 
+### 0.1.6
+#### Fixed
+- Removed radius auth extension as it is no longer used.
+
 ### 0.1.5
 #### Fixed
 - Added clarification to parameters.yaml template to specify an alphanumeric password for the mysql user.
