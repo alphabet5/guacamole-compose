@@ -137,14 +137,8 @@ def main():
                     f.write(haproxy_conf_template.substitute(**params))
             with open('./guacamole_home/guacamole.properties', 'w') as f:
                 yaml.dump(params['guacamole-properties'], open('./guacamole_home/guacamole.properties', 'w'))
-            if 'ldap-hostname' in params['guacamole-properties']:
-                # Copies the guacamole-auth-ldap if ldap is configured.
-                shutil.copy(os.path.join(pkgdir, 'templates/guacamole-auth-ldap-1.3.0.jar'),
-                            os.path.join(os.getcwd(), 'guacamole_home/extensions'))
-            else:
-                # Copies the guacamole-auth-radius if the new method is used without ldap - defaults to radius.
-                shutil.copy(os.path.join(pkgdir, 'templates/guacamole-auth-radius-1.3.0.jar'),
-                            os.path.join(os.getcwd(), 'guacamole_home/extensions'))
+            shutil.copy(os.path.join(pkgdir, 'templates/guacamole-auth-ldap-1.3.0.jar'),
+                        os.path.join(os.getcwd(), 'guacamole_home/extensions'))
             if args['haproxy']:
                 docker_compose_template = string.Template(
                     open(os.path.join(pkgdir, 'templates/docker-compose.yml.haproxy.template'), 'r').read())
