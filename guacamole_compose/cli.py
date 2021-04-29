@@ -44,10 +44,20 @@ def check_port(ip, port):
         return False
 
 
+def cprint(string, color='OKGREEN'):
+    colors = {'OKBLUE': '\033[94m',
+              'OKGREEN': '\033[92m',
+              'WARNING': '\033[93m',
+              'FAIL': '\033[91m',
+              'BOLD': '\033[1m',
+              'HEADER': '\033[95m',
+              'UNDERLINE': '\033[4m'}
+    print(f'{colors[color]}{string}\033[0m')
+
+
 def main():
     import subprocess
     import yaml
-    import shutil
     import docker
     import os
     import yamlarg
@@ -57,28 +67,36 @@ def main():
     pkgdir = sys.modules['guacamole_compose'].__path__[0]
     args = yamlarg.parse(os.path.join(pkgdir, 'arguments.yaml'))
 
+    if args['version']:
+        with open(os.path.join(pkgdir, 'VERSION'), 'r') as f:
+            print(f.read())
+
     if args['init']:
-        print("Creating structure and paramters.yaml...")
-        for folder in ['./guacamole_home',
-                       './guacamole_home/extensions',
-                       './nginx',
-                       './nginx/conf',
-                       './nginx/certs',
-                       './nginx/auth',
-                       './haproxy',
-                       './haproxy/certs',
-                       './tomcat',
-                       './shared']:
-            if not os.path.exists(folder):
-                os.makedirs(folder)
-        pkgfiles = {'parameters.yaml': './parameters.yaml',
-                    'nginx_init.conf': './nginx/conf/nginx.conf',
-                    'haproxy_init.cfg': './haproxy/haproxy.cfg',
-                    'server.xml': './tomcat/server.xml'}
-        for pkgfile, dstfile in pkgfiles.items():
-            if not os.path.isfile(dstfile):
-                shutil.copy(os.path.join(pkgdir, 'templates/' + pkgfile), dstfile)
-    else:
+        # Check if guacamole-compose is being ran as sudo.
+        if os.getenv("SUDO_USER") is not None:
+            cprint("Initialization failed! Do not run 'guacamole-compose --init' as sudo.", 'FAIL')
+        else:
+            print("Creating structure and paramters.yaml...")
+            for folder in ['./guacamole_home',
+                           './guacamole_home/extensions',
+                           './nginx',
+                           './nginx/conf',
+                           './nginx/certs',
+                           './nginx/auth',
+                           './haproxy',
+                           './haproxy/certs',
+                           './tomcat',
+                           './shared']:
+                if not os.path.exists(folder):
+                    os.makedirs(folder)
+            pkgfiles = {'parameters.yaml': './parameters.yaml',
+                        'nginx_init.conf': './nginx/conf/nginx.conf',
+                        'haproxy_init.cfg': './haproxy/haproxy.cfg',
+                        'server.xml': './tomcat/server.xml'}
+            for pkgfile, dstfile in pkgfiles.items():
+                if not os.path.isfile(dstfile):
+                    shutil.copy(os.path.join(pkgdir, 'templates/' + pkgfile), dstfile)
+    elif not args['init'] and not args['version']:
         params = yaml.load(open('parameters.yaml', 'r'), Loader=yaml.FullLoader)
         client = docker.from_env()
 
@@ -149,6 +167,8 @@ def main():
                 print(traceback.format_exc())
             try:
                 docker_compose_cmd = subprocess.run(['docker-compose up -d'], shell=True)
+                # Clean-up unused images.
+                client.images.prune()
             except:
                 import traceback
                 print(traceback.format_exc())
@@ -164,13 +184,10 @@ def main():
             server = Server(params['guacamole-properties']['ldap-hostname'],
                             get_info=ALL)
             ldap_conn = Connection(server=server,
-                                   user=params['ldap']['ldap_domain'].split('.')[0] + '\\' + \
-                                        params['ldap']['ldap_user'],
-                                   password=params['ldap']['ldap_password'],
-                                   auto_bind=True,
-                                   auto_referrals=False,
-                                   authentication=NTLM)
-            domain_dn = ','.join(['DC=' + d for d in params['ldap']['ldap_domain'].split('.')])
+                                   user=params['guacamole-properties']['ldap-search-bind-dn'],
+                                   password=params['guacamole-properties']['ldap-search-bind-password'],
+                                   auto_bind=True)
+            #domain_dn = ','.join(['DC=' + d for d in params['ldap']['ldap_domain'].split('.')])
 
             # Connect to MySQL
             print("Waiting for mysql availability...")
@@ -200,11 +217,9 @@ def main():
             with engine.begin() as sql_conn:
                 connections = list()
                 connection_ids = dict()
-                ldap_conn.search(domain_dn,
-                                 '(&(objectCategory=' + 'Computer' +
-                                 ')(memberOf:1.2.840.113556.1.4.1941:=CN=' +
-                                 str(params['ldap']['ldap_group']) + ',CN=Users,' +
-                                 domain_dn + '))',
+                connection_search_filter = params['guacamole-properties']['ldap-user-search-filter'].replace('objectCategory=User', 'objectCategory=Computer')
+                ldap_conn.search(search_base=params['guacamole-properties']['ldap-group-base-dn'],
+                                 search_filter=connection_search_filter,
                                  attributes=ALL_ATTRIBUTES)
                 computers = json.loads(ldap_conn.response_to_json())
                 connection_names = dict()
@@ -251,11 +266,10 @@ def main():
 
             # Create user groups .
             with engine.begin() as sql_conn:
-                ldap_conn.search(domain_dn,
-                                 '(&(objectCategory=' + 'Group' +
-                                 ')(memberOf:1.2.840.113556.1.4.1941:=CN=' +
-                                 str(params['ldap']['ldap_group']) + ',CN=Users,' +
-                                 domain_dn + '))',
+                group_search_filter = params['guacamole-properties']['ldap-user-search-filter'].replace(
+                    'objectCategory=User', 'objectCategory=Group')
+                ldap_conn.search(search_base=params['guacamole-properties']['ldap-group-base-dn'],
+                                 search_filter=group_search_filter,
                                  attributes=ALL_ATTRIBUTES)
                 ldap_groups = json.loads(ldap_conn.response_to_json())
                 for group in ldap_groups['entries']:
