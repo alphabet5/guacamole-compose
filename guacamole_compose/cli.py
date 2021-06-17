@@ -114,13 +114,14 @@ def main():
             # updated, you don't have to download them again.
             # client.images.prune(filters={'dangling': True})
             for folder in ['./shared',
-                           './mysql',
-                           './init']:
+                           './mysql']:
                 if os.path.exists(folder):
                     shutil.rmtree(folder)
             if args['nginx']:
                 if os.path.exists('./nginx/conf'):
                     shutil.rmtree('./nginx/conf')
+            if args['haproxy_cfg']:
+
 
         if args['deploy']:
             import string

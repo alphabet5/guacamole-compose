@@ -27,7 +27,7 @@ Tested on Ubuntu 20.04 LTS
 ```bash
 sudo apt update && \
     sudo apt upgrade -y && \
-    sudo apt install docker docker-compose python3.9 -y && \
+    sudo apt install docker python3.9 -y && \
     sudo systemctl enable docker && \
     curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py && \
     sudo python3.9 ./get-pip.py
@@ -49,6 +49,16 @@ Python Packages
 
 ```bash
 sudo python3.9 -m pip install guacamole-compose
+```
+
+If you get the following error:
+```text
+ERROR: Cannot uninstall 'PyYAML'. It is a distutils installed project and thus we cannot accurately determine which files belong to it which would lead to only a partial uninstall.
+```
+
+Run this command before installing guacamole-compose
+```bash
+sudo python3.9 -m pip install --upgrade pyyaml --ignore-installed
 ```
 
 Note: sudo is needed in the above command only if docker requires sudo privileges to be ran. This is the case by default when running docker.
@@ -123,6 +133,19 @@ twine upload dist/*
 ```
 
 ## Changelog
+
+### 0.1.7
+#### Fixed
+- docker-compose version (changed to v1)
+- docker-compose requirement in setup.py
+
+#### Other
+- Added notes in the readme on errors caused by distutils version of pyyaml.
+
+### 0.1.6
+#### Fixed
+- Removed radius auth extension as it is no longer used.
+- Removed unnecessary ./init folder removal in the clean command.
 
 ### 0.1.5
 #### Fixed

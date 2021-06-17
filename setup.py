@@ -33,5 +33,6 @@ setuptools.setup(
                       'pyyaml>=5.4.1',
                       'cryptography>=3.4.7',
                       'cffi>=1.14.5',
-                      'dnspython>=2.1.0'],
+                      'dnspython>=2.1.0',
+                      'docker-compose>=1.29.2'],
 )
