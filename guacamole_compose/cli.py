@@ -121,7 +121,8 @@ def main():
                 if os.path.exists('./nginx/conf'):
                     shutil.rmtree('./nginx/conf')
             if args['haproxy_cfg']:
-
+                if os.path.exists('./haproxy'):
+                    shutil.rmtree('./haproxy')
 
         if args['deploy']:
             import string

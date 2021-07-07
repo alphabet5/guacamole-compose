@@ -136,11 +136,12 @@ twine upload dist/*
 
 ### 0.1.7
 #### Fixed
-- docker-compose version (changed to v1)
+- docker-compose version (changed to v3.9)
 - docker-compose requirement in setup.py
 
 #### Other
 - Added notes in the readme on errors caused by distutils version of pyyaml.
+- Changes in the --clean command to only clean up specific folders for nginx, haproxy, etc.
 
 ### 0.1.6
 #### Fixed
