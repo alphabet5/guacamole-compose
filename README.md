@@ -1,4 +1,7 @@
 # guacamole-compose
+
+## This project has been archived. This was a great learning experience and helpful for automating some repetitive tasks. The mechanism of use is not ideal for further automation. I am replacing some functionality here with alphabet5/guacamole-users-docker with the intent to be a stateless mechanism for syncing ldap computers and groups to mysql, running in a container.
+
  docker-compose script for running apache guacamole.
 
 ## Overview
@@ -27,10 +30,28 @@ Tested on Ubuntu 20.04 LTS
 ```bash
 sudo apt update && \
     sudo apt upgrade -y && \
+<<<<<<< Updated upstream
     sudo apt install docker docker-compose python3.9 -y && \
+=======
+    sudo apt install apt-transport-https ca-certificates curl software-properties-common && \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - && \
+    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable" && \
+    sudo apt update && \
+    sudo apt install docker-ce python3.9 -y && \
+>>>>>>> Stashed changes
     sudo systemctl enable docker && \
     curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py && \
     sudo python3.9 ./get-pip.py
+```
+
+Using Podman:
+```bash
+source /etc/os-release
+sudo sh -c "echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list"
+sudo wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_${VERSION_ID}/Release.key -O- | sudo apt-key add -
+sudo apt-get update -qq -y
+sudo apt-get -qq --yes install podman
+#TODO...
 ```
 
 Python Packages
@@ -124,6 +145,28 @@ twine upload dist/*
 
 ## Changelog
 
+<<<<<<< Updated upstream
+=======
+### 0.1.8
+#### Changed
+- Removed the command-line and pip packages. This is now only for linking to mysql and ldap as well as database initialization.
+- 
+
+### 0.1.7
+#### Fixed
+- docker-compose version (changed to v3.9)
+- docker-compose requirement in setup.py
+
+#### Other
+- Added notes in the readme on errors caused by distutils version of pyyaml.
+- Changes in the --clean command to only clean up specific folders for nginx, haproxy, etc.
+
+### 0.1.6
+#### Fixed
+- Removed radius auth extension as it is no longer used.
+- Removed unnecessary ./init folder removal in the clean command.
+
+>>>>>>> Stashed changes
 ### 0.1.5
 #### Fixed
 - Added clarification to parameters.yaml template to specify an alphanumeric password for the mysql user.
